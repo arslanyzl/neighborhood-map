@@ -15,6 +15,9 @@
         <div class="col-md-4">
           <h1>Neighborhood Map: Munich</h1>
           <input class="search search-form" type="text" placeholder="Filter Location" data-bind="textInput: filter">
+          <ul data-bind="foreach: filteredArray" class="list-view">
+            <li data-bind="text: title"></li>
+          </ul>
         </div>
       <div id="map"></div>
     </div>
