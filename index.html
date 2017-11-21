@@ -8,23 +8,25 @@
   <link href="https://fonts.googleapis.com/css?family=Maven+Pro" rel="stylesheet">
   <link rel="stylesheet" type="css/bootstrap.css" href="">
   <link rel="stylesheet" href="css/main.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
   <body>
     <div class="container">
       <div class="row">
         <div class="col-md-4">
           <h1>Neighborhood Map: Munich</h1>
-          <input class="search search-form" type="text" placeholder="Filter Location" data-bind="textInput: filter">
-          <ul data-bind="foreach: filteredArray" class="list-view">
-            <li data-bind="text: title"></li>
+          <input id="list" type="search" placeholder="Search Location" size="50" data-bind="textInput: query, valueUpdate: 'keyup'"/>
+          <ul id="list-view" class="list-view" data-bind="foreach: search">
+            <li id="list-view" data-bind="text: title, click: $parent.clickroute"></li>
           </ul>
         </div>
       <div id="map"></div>
     </div>
 
+    <script src="js/knockout-3.3.0.js"></script>
     <script src="js/main.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyDE4IdQhw9WNPItp1joWq660zIYsWICu7E&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?libraries=places,drawing&key=AIzaSyDE4IdQhw9WNPItp1joWq660zIYsWICu7E&v=3&callback=initMap">
     </script>
 
   </body>

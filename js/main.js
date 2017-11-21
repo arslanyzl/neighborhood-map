@@ -37,7 +37,12 @@ var locations = [
   }
 ];
 
+
+
 // ---VIEWMODEL---
+
+
+
 var map;
 
 var markers = [];
@@ -69,6 +74,7 @@ var markers = [];
             map: map,
             position: position,
             title: title,
+            icon: defaultIcon,
             animation: google.maps.Animation.DROP,
             id: i
           });
@@ -85,10 +91,12 @@ var markers = [];
             this.setIcon(defaultIcon);
           });
           bounds.extend(markers[i].position);
+
         }
         // Extend the boundaries of the map for each marker
         map.fitBounds(bounds);
-      }
+
+      };
 
       // This function populates the infowindow when the marker is clicked. We'll only allow
       // one infowindow which will open at the marker that is clicked, and populate based
@@ -108,37 +116,54 @@ var markers = [];
         // Check to make sure the infowindow is not already opened on this marker.
         if (infowindow.marker != marker) {
           infowindow.marker = marker;
-          infowindow.setContent('');
+          infowindow.setContent('<div>' + marker.title + '</div>');
           infowindow.open(map, marker);
           // Make sure the marker property is cleared if the infowindow is closed.
           infowindow.addListener('closeclick',function(){
             infowindow.setMarker = null;
           });
-          var streetViewService = new google.maps.StreetViewService();
-          var radius = 50;
-          function getStreetView(data, status) {
-            if (status == google.maps.StreetViewStatus.OK) {
-              var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                var panoramaOptions = {
-                  position: nearStreetViewLocation,
-                  pov: {
-                    heading: heading,
-                    pitch: 30
-                  }
-                };
-              var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), panoramaOptions);
-            } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div>');
-            }
-          }
 
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
           // Open the infowindow on the correct marker.
           infowindow.open(map, marker);
         }
   }
+  var ViewModel = function() {
+    var self = this;
+
+    this.searchItem = ko.observable('');
+
+    this.mapList = ko.observableArray([]);
+
+    // add location markers for each location
+    locations.forEach(function(location) {
+        self.mapList.push( new LocationMarker(location) );
+    });
+
+    // locations viewed on map
+    this.locationList = ko.computed(function() {
+        var searchFilter = self.searchItem().toLowerCase();
+        if (searchFilter) {
+            return ko.utils.arrayFilter(self.mapList(), function(location) {
+                var str = location.title.toLowerCase();
+                var result = str.includes(searchFilter);
+                location.visible(result);
+        return result;
+      });
+        }
+        self.mapList().forEach(function(location) {
+            location.visible(true);
+        });
+        return self.mapList();
+    }, self);
+};
+
+
+
+//$('#list li').each(function(i, e) {
+  //$(e).click(function(i) {
+    //return function(e) {
+      //google.maps.event.trigger(markers[i], 'click');
+    //}
+  //}(i));
+//});
+

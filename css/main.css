@@ -4,10 +4,13 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  color: #eeeeee;
+  color: #000;
   font-size: 15px;
 }
 
+.list-view {
+  color: #eeeeee;
+}
 
 .container {
   height: 100%;
