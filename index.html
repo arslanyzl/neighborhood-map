@@ -15,8 +15,8 @@
       <div class="row">
         <div class="col-md-4">
           <h1>Neighborhood Map: Munich</h1>
-          <input id="list" type="search" placeholder="Search Location" size="50" data-bind="textInput: query, valueUpdate: 'keyup'"/>
-          <ul id="list-view" class="list-view" data-bind="foreach: search">
+          <input id="list" type="search" placeholder="Search Location" size="50" data-bind="textInput: searchItem, valueUpdate: 'keyup'"/>
+          <ul id="list-view" class="list-view" data-bind="foreach: viewPlace">
             <li id="list-view" data-bind="text: title, click: $parent.clickroute"></li>
           </ul>
         </div>

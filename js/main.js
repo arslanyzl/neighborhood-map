@@ -47,6 +47,7 @@ var map;
 
 var markers = [];
 
+
   function initMap() {
         // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
@@ -95,7 +96,7 @@ var markers = [];
         }
         // Extend the boundaries of the map for each marker
         map.fitBounds(bounds);
-
+        ko.applyBindings(new ViewModel());
       };
 
       // This function populates the infowindow when the marker is clicked. We'll only allow
@@ -127,35 +128,26 @@ var markers = [];
           infowindow.open(map, marker);
         }
   }
-  var ViewModel = function() {
-    var self = this;
 
-    this.searchItem = ko.observable('');
-
-    this.mapList = ko.observableArray([]);
-
-    // add location markers for each location
-    locations.forEach(function(location) {
-        self.mapList.push( new LocationMarker(location) );
+var ViewModel = function() {
+  var self = this;
+  self.filter = ko.observable("");
+  self.viewPlace = ko.computed( function() {
+    var name = [];
+    locations.forEach(function(place) {
+      if (place.title.toLowerCase().indexOf(self.filter().toLowerCase()) > -1) {
+        name.push(place);
+        place.marker.setVisible(true);
+      }else place.marker.setVisible(false);
     });
-
-    // locations viewed on map
-    this.locationList = ko.computed(function() {
-        var searchFilter = self.searchItem().toLowerCase();
-        if (searchFilter) {
-            return ko.utils.arrayFilter(self.mapList(), function(location) {
-                var str = location.title.toLowerCase();
-                var result = str.includes(searchFilter);
-                location.visible(result);
-        return result;
-      });
-        }
-        self.mapList().forEach(function(location) {
-            location.visible(true);
-        });
-        return self.mapList();
-    }, self);
+    return name;
+  });
+  self.select = function(parent) {
+    clickData(parent);
+  };
 };
+
+
 
 
 
