@@ -96,7 +96,6 @@ var markers = [];
         }
         // Extend the boundaries of the map for each marker
         map.fitBounds(bounds);
-        ko.applyBindings(new ViewModel());
       };
 
       // This function populates the infowindow when the marker is clicked. We'll only allow
@@ -129,33 +128,17 @@ var markers = [];
         }
   }
 
-var ViewModel = function() {
-  var self = this;
-  self.filter = ko.observable("");
-  self.viewPlace = ko.computed( function() {
-    var name = [];
-    locations.forEach(function(place) {
-      if (place.title.toLowerCase().indexOf(self.filter().toLowerCase()) > -1) {
-        name.push(place);
-        place.marker.setVisible(true);
-      }else place.marker.setVisible(false);
-    });
-    return name;
-  });
-  self.select = function(parent) {
-    clickData(parent);
-  };
-};
 
 
 
 
 
-//$('#list li').each(function(i, e) {
-  //$(e).click(function(i) {
-    //return function(e) {
-      //google.maps.event.trigger(markers[i], 'click');
-    //}
-  //}(i));
-//});
+
+$('#list li').each(function(i, e) {
+  $(e).click(function(i) {
+    return function(e) {
+      google.maps.event.trigger(markers[i], 'click');
+    }
+  }(i));
+});
 
