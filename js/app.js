@@ -128,7 +128,7 @@ function ViewModel() {
     //place:ko.observableArray(locations)
   //};
   this.initMap();
-
+// location list and filter search
   this.myLocations = ko.computed(function() {
     var result = [];
       for (var i = 0; i < this.markers.length; i++) {
@@ -144,7 +144,6 @@ function ViewModel() {
     }, this);
 
     ko.applyBindings(myLocations);
-
 };
 
 
