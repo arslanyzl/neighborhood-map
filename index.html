@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Neighborhood Map</title>
   <meta charset="utf-8">
@@ -15,18 +15,18 @@
       <div class="row">
         <div class="col-md-4">
           <h1>Neighborhood Map: Munich</h1>
-          <input id="list" type="search" placeholder="Search Location" size="50" data-bind="textInput: searchItem, valueUpdate: 'keyup'"/>
-          <ul id="list-view list" class="list-view" data-bind="foreach: titles">
-            <li id="list-view list" data-bind="text: title, click: $parent.click"></li>
+          <input id="list" placeholder="Search Location" size="50" data-bind="textInput: searchOption, valueUpdate: 'afterkeydown'"/>
+          <ul id="list-view list" class="list-view" data-bind="foreach: myLocations">
+            <li id="list-view list" data-bind="text: title, click: $parent.select"></li>
           </ul>
         </div>
       <div id="map"></div>
     </div>
 
-    <script src="js/knockout-3.3.0.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/knockout-3.4.2.js"></script>
+    <script src="js/app.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=places,drawing&key=AIzaSyDE4IdQhw9WNPItp1joWq660zIYsWICu7E&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?libraries=places,drawing&key=AIzaSyDE4IdQhw9WNPItp1joWq660zIYsWICu7E&v=3&callback=ViewModel">
     </script>
 
   </body>
