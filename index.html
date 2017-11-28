@@ -17,7 +17,7 @@
           <h1>Neighborhood Map: Munich</h1>
           <input id="list" placeholder="Search Location" size="50" data-bind="textInput: searchOption, valueUpdate: 'afterkeydown'"/>
           <ul id="list-view list" class="list-view" data-bind="foreach: myLocations">
-            <li id="list-view list" data-bind="text: title, click: $parent.select"></li>
+            <li id="list-view list" data-bind="text: title, click: $parent.openInfoWindow"></li>
           </ul>
         </div>
       <div id="map"></div>
