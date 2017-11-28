@@ -38,13 +38,18 @@ var locations = [
 // ---VIEWMODEL---
 
 var map;
-//var markers[];
+var marker;
 
 function ViewModel() {
   var self = this;
 
   this.searchOption = ko.observable("");
   this.markers = [];
+
+  this.openInfoWindow = function() {
+      populateInfoWindow(this, self.largeInfowindow);
+      this.setAnimation(google.maps.Animation.BOUNCE);
+    }
 
   this.initMap = function () {
         // Constructor creates a new map - only center and zoom are required.
@@ -67,22 +72,22 @@ function ViewModel() {
     for (var i = 0; i < locations.length; i++) {
           // Get the position from the location array.
       this.position = locations[i].location;
-      this.markerTitle = locations[i].title;
+      this.title = locations[i].title;
           // Create a marker per location, and put into markers array.
       this.marker = new google.maps.Marker({
         map: map,
         position: this.position,
-        title: this.markerTitle,
+        title: this.title,
         icon: defaultIcon,
         animation: google.maps.Animation.DROP,
         id: i
       });
           // Push the marker to our array of markers.
+      this.marker.setMap(map);
       this.markers.push(this.marker);
           // Create an onclick event to open an infowindow at each marker.
-      this.marker.addListener('click', function() {
-        populateInfoWindow(this, largeInfowindow);
-      });
+      this.marker.addListener('click', self.openInfoWindow);
+
       this.marker.addListener('mouseover', function() {
         this.setIcon(highlightedIcon);
       });
@@ -91,6 +96,8 @@ function ViewModel() {
       });
       bounds.extend(markers[i].position);
     }
+
+
         // Extend the boundaries of the map for each marker
         map.fitBounds(bounds);
   };
@@ -115,6 +122,7 @@ function ViewModel() {
       infowindow.marker = marker;
       infowindow.setContent('<div>' + marker.title + '</div>');
       infowindow.open(map, marker);
+      setTimeout(function() {marker.setAnimation(null);}, 750);
           // Make sure the marker property is cleared if the infowindow is closed.
       infowindow.addListener('closeclick',function(){
         infowindow.setMarker = null;
@@ -128,7 +136,7 @@ function ViewModel() {
     //place:ko.observableArray(locations)
   //};
   this.initMap();
-// location list and filter search
+
   this.myLocations = ko.computed(function() {
     var result = [];
       for (var i = 0; i < this.markers.length; i++) {
@@ -145,8 +153,3 @@ function ViewModel() {
 
     ko.applyBindings(myLocations);
 };
-
-
-
-
-
