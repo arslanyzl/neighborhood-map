@@ -46,14 +46,15 @@ function initGoogleMap() {
 function ViewModel() {
   var self = this;
 
-  this.searchOption = ko.observable("");
   this.markers = [];
 
   this.initMap = function () {
-        // Constructor creates a new map - only center and zoom are required.
+    // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 48.137494, lng: 11.575430}, zoom: 13
     });
+
+
 
     this.largeInfowindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
@@ -95,6 +96,12 @@ function ViewModel() {
       populateInfoWindow(this, self.largeInfowindow);
       this.setAnimation(google.maps.Animation.BOUNCE);
       };
+      //resize google map when changing screen size
+      google.maps.event.addDomListener(window, "resize", function() {
+        var center = map.getCenter();
+        google.maps.event.trigger(map, "resize");
+        map.setCenter(center);
+      });
     };
 
 
@@ -116,7 +123,7 @@ function ViewModel() {
   }
 
   var populateInfoWindow = function(marker, infowindow) {
-        // Check to make sure the infowindow is not already opened on this marker.
+      // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
       infowindow.marker = marker;
       infowindow.setContent('<div>' + marker.title + '</div>');
@@ -133,18 +140,19 @@ function ViewModel() {
   };
 
   this.initMap();
-
+  //Place list and filter by search
+  this.search = ko.observable('');
   this.myPlaces = ko.computed(function() {
     var list = [];
-      for (var i = 0; i < this.markers.length; i++) {
-        var place = this.markers[i];
-        if (place.title.toLowerCase().includes(this.searchOption().toLowerCase())) {
-          list.push(place);
-          this.markers[i].setVisible(true);
-        } else {
-          this.markers[i].setVisible(false);
-        }
+    for (var i = 0; i < this.markers.length; i++) {
+      var place = this.markers[i];
+      if (place.title.toLowerCase().includes(this.search().toLowerCase())) {
+        list.push(place);
+        this.markers[i].setVisible(true);
+       } else {
+        this.markers[i].setVisible(false);
       }
-        return list;
-    }, this);
+    }
+      return list;
+  }, this);
 };
