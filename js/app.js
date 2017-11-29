@@ -38,7 +38,10 @@ var locations = [
 // ---VIEWMODEL---
 
 var map;
-var marker;
+
+function initGoogleMap() {
+      ko.applyBindings(new ViewModel);
+}
 
 function ViewModel() {
   var self = this;
@@ -46,34 +49,27 @@ function ViewModel() {
   this.searchOption = ko.observable("");
   this.markers = [];
 
-  this.openInfoWindow = function() {
-      populateInfoWindow(this, self.largeInfowindow);
-      this.setAnimation(google.maps.Animation.BOUNCE);
-    }
-
   this.initMap = function () {
         // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 48.137494, lng: 11.575430}, zoom: 13
     });
 
-
     this.largeInfowindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
 
-               // Style the markers a bit. This will be our listing marker icon.
+    // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = makeMarkerIcon('0091ff');
 
-        // Create a "highlighted location" marker color for when the user
-        // mouses over the marker.
+    // Create a "highlighted location" marker color for when the user mouses over the marker.
     var highlightedIcon = makeMarkerIcon('FFFF24');
 
-        // The following group uses the location array to create an array of markers on initialize.
+    // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < locations.length; i++) {
-          // Get the position from the location array.
+      // Get the position from the location array.
       this.position = locations[i].location;
       this.title = locations[i].title;
-          // Create a marker per location, and put into markers array.
+      // Create a marker per location, and put into markers array.
       this.marker = new google.maps.Marker({
         map: map,
         position: this.position,
@@ -82,10 +78,10 @@ function ViewModel() {
         animation: google.maps.Animation.DROP,
         id: i
       });
-          // Push the marker to our array of markers.
+      // Push the marker to our array of markers.
       this.marker.setMap(map);
       this.markers.push(this.marker);
-          // Create an onclick event to open an infowindow at each marker.
+      // Create an onclick event to open an infowindow at each marker.
       this.marker.addListener('click', self.openInfoWindow);
 
       this.marker.addListener('mouseover', function() {
@@ -94,18 +90,21 @@ function ViewModel() {
       this.marker.addListener('mouseout', function() {
         this.setIcon(defaultIcon);
       });
-      bounds.extend(markers[i].position);
-    }
+      bounds.extend(this.markers[i].position);
+      this.openInfoWindow = function() {
+      populateInfoWindow(this, self.largeInfowindow);
+      this.setAnimation(google.maps.Animation.BOUNCE);
+      };
+    };
 
 
         // Extend the boundaries of the map for each marker
         map.fitBounds(bounds);
   };
-
       // This function populates the infowindow when the marker is clicked. We'll only allow
       // one infowindow which will open at the marker that is clicked, and populate based
       // on that markers position.
-  this.makeMarkerIcon = function(markerColor) {
+  var makeMarkerIcon = function(markerColor) {
     var markerImage = new google.maps.MarkerImage(
           'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
           '|40|_|%E2%80%A2',
@@ -116,7 +115,7 @@ function ViewModel() {
         return markerImage;
   }
 
-  this.populateInfoWindow = function(marker, infowindow) {
+  var populateInfoWindow = function(marker, infowindow) {
         // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
       infowindow.marker = marker;
@@ -128,28 +127,24 @@ function ViewModel() {
         infowindow.setMarker = null;
       });
 
-          // Open the infowindow on the correct marker.
+      // Open the infowindow on the correct marker.
       infowindow.open(map, marker);
     }
   };
-  //var locationPlace = {
-    //place:ko.observableArray(locations)
-  //};
+
   this.initMap();
 
-  this.myLocations = ko.computed(function() {
-    var result = [];
+  this.myPlaces = ko.computed(function() {
+    var list = [];
       for (var i = 0; i < this.markers.length; i++) {
-        var markerLocation = this.markers[i];
-        if (markerLocation.title.toLowerCase().includes(this.searchOption().toLowerCase())) {
-          result.push(markerLocation);
+        var place = this.markers[i];
+        if (place.title.toLowerCase().includes(this.searchOption().toLowerCase())) {
+          list.push(place);
           this.markers[i].setVisible(true);
         } else {
           this.markers[i].setVisible(false);
         }
       }
-        return result;
+        return list;
     }, this);
-
-    ko.applyBindings(myLocations);
 };
