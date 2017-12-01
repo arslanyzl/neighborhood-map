@@ -2,29 +2,32 @@
 
 > Munich Germany
 
-## About
-This is the fifth project for the Udacity Full Stack Nanodegree. The Neighborhood Map project involves developing a single page application with the KnockoutJS framework and various API's. Aside from the Google Maps API, additional information is added to the project locations with the FourSquare API loaded asynchronously. KnockoutJS allows the project to be organized with the MVVM pattern.
+## Project Overview
+You will develop a single page application featuring a map of your neighborhood or a neighborhood you would like to visit. You will then add functionality to this map including highlighted locations, third-party data about those locations and various ways to browse the content.
 
 ## Skills used for this project
 - JavaScript
+- KnockoutJS
+- Google Maps API
 - jQuery
 - HTML
 - CSS
 - Bootstrap
-- KnockoutJS
-- Google Maps API
 
 
-## Getting Started
+
+## How to RUN
 - Download the project or clone the repository
 - Open `index.html`
 
 
 ## References
-https://developers.google.com/maps/documentation/javascript/
-
-https://www.w3schools.com/
 
 https://www.udacity.com
 
-http://www.knockmeout.net/
+http://www.knockmeout.net
+
+https://developers.google.com/maps/documentation/javascript
+
+https://www.w3schools.com
+
