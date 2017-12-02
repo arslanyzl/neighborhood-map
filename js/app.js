@@ -3,7 +3,7 @@
 var locations = [
   {
     title: 'Odeonsplatz',
-    location: {lat: 48.143732, lng: 11.577297}
+    location: {lat: 48.142290, lng: 11.577612}
   },
   {
     title: 'Alte Pinakothek',
@@ -18,20 +18,20 @@ var locations = [
     location: {lat: 48.178284, lng: 11.556187}
   },
   {
-    title: 'Olympiapark München',
-    location: {lat: 48.175682, lng: 11.551791}
+    title: 'Münchner Olympiastadion',
+    location: {lat: 48.173383, lng: 11.546646}
   },
   {
     title: 'Ludwig-Maximilians-Universität',
     location: {lat: 48.150774, lng: 11.580327}
   },
   {
-    title: 'Sendlinger Tor',
-    location: {lat: 48.166871, lng: 11.567718}
+    title: 'Karlsplatz Stachus',
+    location: {lat: 48.139272, lng: 11.566022}
   },
   {
     title: 'Marienplatz',
-    location: {lat: 48.137494, lng: 11.575430}
+    location: {lat: 48.137493, lng: 11.575457}
   }
 ];
 
@@ -125,7 +125,34 @@ function ViewModel() {
       // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
       infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.title + '</div>');
+
+      var clientID = "YYH20ZO3RA1S2OQ3VYXGRHV005BY1S3IF0V10ETQFYRWG1ZH";
+      var clientSecret = "ZLBJYT0N5YJ4TWTL1A55NAJR0L1ACYE0TMEDJ2OT5LUOYSX0";
+
+      var foursquareUrl = 'https://api.foursquare.com/v2/venues/search?ll=' +
+        marker.position.lat() + ',' + marker.position.lng() +
+        '&client_id=' + clientID + '&client_secret=' + clientSecret +
+        '&query=' + marker.title + '&v=20171111' + '&m=foursquare';
+
+      $.getJSON(foursquareUrl, function(data) {
+        var response = data.response.venues[0];
+        self.category = response.categories[0].shortName;
+        self.street = response.location.formattedAddress[0];
+        self.zipcity = response.location.formattedAddress[1];
+
+        self.htmlInfo =
+          '<h3>' + marker.title + '</h3>' +
+          '<h5>' + self.category + '</h5>' +
+          '<p><strong>Address: </strong>' + self.street + '</p>' +
+          '<p>' + self.zipcity + '</p>';
+
+        infowindow.setContent(self.htmlInfo);
+      }).fail(function() {
+        alert(
+          "ERROR: Please refresh your page and/or check your internet connection"
+        );
+      });
+
       infowindow.open(map, marker);
       setTimeout(function() {marker.setAnimation(null);}, 750);
       infowindow.addListener('closeclick',function(){
@@ -153,4 +180,8 @@ function ViewModel() {
     }
       return list;
   }, this);
+};
+
+function error() {
+  alert("ERROR: Google Map could not be loaded. \nPlease check your internet connection")
 };
